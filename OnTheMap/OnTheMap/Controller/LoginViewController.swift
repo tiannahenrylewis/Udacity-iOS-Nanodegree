@@ -41,8 +41,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //MARK: - UI Functions
     @IBAction func loginButtonTapped(_ sender: Any) {
         handleSessionResponse()
-        //TODO: Peroform Authentication Before Proceeding with Segue
-        //performSegue(withIdentifier: "loginSegue", sender: self)
     }
     
     
@@ -60,7 +58,20 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     func handleLoginResponse(success: Bool, error: Error?) {
-        print("HANDLE LOGIN RESPONSE")
+        DispatchQueue.main.async {
+            if success {
+                self.performSegue(withIdentifier: "loginSegue", sender: self)
+            } else {
+                self.performSegue(withIdentifier: "loginSegue", sender: self)
+//                let ac = UIAlertController(title: "Login Unsuccessful", message: error?.localizedDescription ?? "", preferredStyle: .alert)
+//                ac.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+//                self.present(ac, animated: true)
+            }
+        }
+    }
+    
+    func presentAlert(title: String, message: String, actionTitle: String) {
+        
     }
     
 
