@@ -78,6 +78,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func refreshButtonTapped(_ sender: Any) {
+        var annotations = [MKPointAnnotation]()
+        for location in UdacityAPIClient.Variables.studentLocations {
+            
+            let lat = CLLocationDegrees(location.latitude)
+            let long = CLLocationDegrees(location.longitude)
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                        
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = "\(location.firstName) \(location.lastName)"
+            annotation.subtitle = location.mediaURL
+            
+            annotations.append(annotation)
+        }
+        mapView.addAnnotations(annotations)
+    }
+    
+    @IBAction func unwind( _ seg: UIStoryboardSegue) {
     }
     
     
@@ -87,7 +105,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             if success {
                 self.dismiss(animated: true, completion: nil)
             } else {
-                print("ERROR LOGGING OUT - IMPLEMENT ALERT")
+                self.showAlert(title: "Logout Error", message: "Connection lost and unable to process logout request")
             }
         }
     }
@@ -101,7 +119,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if success {
             populateMap()
         } else {
-            print("There was an eror populating the map")
+            self.showAlert(title: "Download Failed", message: error.localizedDescription)
         }
     }
     

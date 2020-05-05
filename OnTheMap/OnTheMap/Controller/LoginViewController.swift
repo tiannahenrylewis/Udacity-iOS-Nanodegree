@@ -62,16 +62,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             if success {
                 self.performSegue(withIdentifier: "loginSegue", sender: self)
             } else {
-                self.performSegue(withIdentifier: "loginSegue", sender: self)
-//                let ac = UIAlertController(title: "Login Unsuccessful", message: error?.localizedDescription ?? "", preferredStyle: .alert)
-//                ac.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-//                self.present(ac, animated: true)
+                self.showAlert(title: "Login Failed", message: error?.localizedDescription ?? "An error occured during login")
             }
         }
-    }
-    
-    func presentAlert(title: String, message: String, actionTitle: String) {
-        
     }
     
 

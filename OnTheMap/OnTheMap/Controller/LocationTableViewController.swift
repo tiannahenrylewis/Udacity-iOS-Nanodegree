@@ -65,7 +65,7 @@ class LocationTableViewController: UITableViewController {
             if success {
                 self.dismiss(animated: true, completion: nil)
             } else {
-                print("ERROR LOGGIN OUT - IMPLEMENT ALERT")
+                self.showAlert(title: "Logout Error", message: "Connection lost and unable to process logout request")
             }
         }
     }
