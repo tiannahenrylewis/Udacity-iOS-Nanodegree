@@ -9,23 +9,29 @@
 /* Begin PBXBuildFile section */
 		91D641B924631F2100B3E9AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D641B824631F2100B3E9AC /* AppDelegate.swift */; };
 		91D641BB24631F2100B3E9AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D641BA24631F2100B3E9AC /* SceneDelegate.swift */; };
-		91D641BD24631F2100B3E9AC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D641BC24631F2100B3E9AC /* ViewController.swift */; };
 		91D641C024631F2100B3E9AC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91D641BE24631F2100B3E9AC /* Main.storyboard */; };
 		91D641C224631F2600B3E9AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91D641C124631F2600B3E9AC /* Assets.xcassets */; };
 		91D641C524631F2600B3E9AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91D641C324631F2600B3E9AC /* LaunchScreen.storyboard */; };
 		91D641D124631FC900B3E9AC /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 91D641CF24631FC900B3E9AC /* VirtualTourist.xcdatamodeld */; };
+		91D642012467DCE800B3E9AC /* LocationMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D642002467DCE800B3E9AC /* LocationMapViewController.swift */; };
+		91D64203246A0BA900B3E9AC /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D64202246A0BA900B3E9AC /* DataController.swift */; };
+		91D64205246A275400B3E9AC /* PinAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D64204246A275400B3E9AC /* PinAlbumViewController.swift */; };
+		91D64207246A29F300B3E9AC /* UserDefaultsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D64206246A29F300B3E9AC /* UserDefaultsClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		91D641B524631F2100B3E9AC /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91D641B824631F2100B3E9AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		91D641BA24631F2100B3E9AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		91D641BC24631F2100B3E9AC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		91D641BF24631F2100B3E9AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		91D641C124631F2600B3E9AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91D641C424631F2600B3E9AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91D641C624631F2600B3E9AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		91D641D024631FC900B3E9AC /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
+		91D642002467DCE800B3E9AC /* LocationMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapViewController.swift; sourceTree = "<group>"; };
+		91D64202246A0BA900B3E9AC /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		91D64204246A275400B3E9AC /* PinAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinAlbumViewController.swift; sourceTree = "<group>"; };
+		91D64206246A29F300B3E9AC /* UserDefaultsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,7 +78,8 @@
 		91D641CC24631F7400B3E9AC /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				91D641BC24631F2100B3E9AC /* ViewController.swift */,
+				91D642002467DCE800B3E9AC /* LocationMapViewController.swift */,
+				91D64204246A275400B3E9AC /* PinAlbumViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -90,6 +97,8 @@
 			isa = PBXGroup;
 			children = (
 				91D641CF24631FC900B3E9AC /* VirtualTourist.xcdatamodeld */,
+				91D64202246A0BA900B3E9AC /* DataController.swift */,
+				91D64206246A29F300B3E9AC /* UserDefaultsClient.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -165,8 +174,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91D64203246A0BA900B3E9AC /* DataController.swift in Sources */,
+				91D64207246A29F300B3E9AC /* UserDefaultsClient.swift in Sources */,
+				91D642012467DCE800B3E9AC /* LocationMapViewController.swift in Sources */,
+				91D64205246A275400B3E9AC /* PinAlbumViewController.swift in Sources */,
 				91D641D124631FC900B3E9AC /* VirtualTourist.xcdatamodeld in Sources */,
-				91D641BD24631F2100B3E9AC /* ViewController.swift in Sources */,
 				91D641B924631F2100B3E9AC /* AppDelegate.swift in Sources */,
 				91D641BB24631F2100B3E9AC /* SceneDelegate.swift in Sources */,
 			);
@@ -313,6 +325,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9WDM8695CA;
 				INFOPLIST_FILE = VirtualTourist/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -330,6 +343,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9WDM8695CA;
 				INFOPLIST_FILE = VirtualTourist/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
