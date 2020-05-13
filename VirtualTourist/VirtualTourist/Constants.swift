@@ -9,6 +9,6 @@
 import Foundation
 
 class Constants {
-    static let FlickrAPIKey = "6eb897135eb699a6e693b652b59ad801"
-    static let FlickrAPISecret = "d37f5fe09074d2f5"
+    static let FlickrAPIKey = "<API Key>"
+    static let FlickrAPISecret = "<API Secret>"
 }
