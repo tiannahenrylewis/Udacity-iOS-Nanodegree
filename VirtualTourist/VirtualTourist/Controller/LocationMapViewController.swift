@@ -140,7 +140,3 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     }
 
 }
-
-//pins.filter({ $0.coordinate.latitude == view.annotation?.coordinate.latitude && $0.coordinate.longitude == view.annotation?.coordinate.longitude }).first
-
-//let annotations = result.map { createAnnotations(latitude: $0.latitude, longitude: $0.longitude)}

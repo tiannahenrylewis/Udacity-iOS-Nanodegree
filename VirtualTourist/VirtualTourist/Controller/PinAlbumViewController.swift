@@ -16,6 +16,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var albumCollectionView: UICollectionView!
     @IBOutlet weak var newCollectionButton: UIButton!
+    @IBOutlet weak var noImagesLabel: UILabel!
     
     //MARK: - VARIABLES
     var pin : Pin!
@@ -28,7 +29,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     //MARK: - LIFECYCLE METHODS
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         
         
@@ -67,37 +68,52 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     //MARK: - COLLECTIONVIEW DELEGATES
     
     
+    
+    //MARK: - UI-DRIVEN ACTIONS
+    @IBAction func newCollectionTapped(_ sender: Any) {
+        print("User has tapped newCollection Button")
+        
+        pin.removeFromPhotos(pin.photos!)
+        for _ in 0..<30 {
+           let photo = Photo(context: dataController.viewContext)
+           pin.addToPhotos(photo)
+        }
+        try? dataController.viewContext.save()
+        fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
+    }
+    
+    
     //MARK: - METHODS
     func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-       fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
         fetchedResultsController.delegate = self
-       
+        
         do {
-          try fetchedResultsController.performFetch()
-       } catch {
-          fatalError("The fetch could not be performed: \(error.localizedDescription)")
-       }
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
     }
     
     func createFetchRequest(_ offset: Int? = nil) -> NSFetchRequest<Photo> {
-       let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-       let predicate = NSPredicate(format: "pin == %@", pin)
-       fetchRequest.predicate = predicate
-       let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
-       fetchRequest.sortDescriptors = [sortDescriptor]
-       if let offset = offset {
-          fetchRequest.fetchOffset = offset
-       }
-       return fetchRequest
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        if let offset = offset {
+            fetchRequest.fetchOffset = offset
+        }
+        return fetchRequest
     }
     
     func performFetch(offset: Int? = nil) -> [Photo]? {
-       return try? dataController.viewContext.fetch(createFetchRequest(offset))
+        return try? dataController.viewContext.fetch(createFetchRequest(offset))
     }
     
     func setupMapView() {
@@ -137,19 +153,18 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
             }
             
             FlickrAPIClient.Variables.fetchedPhotosResponses.forEach {
-                FlickrAPIClient.downloadPhoto(photo: $0, completion: handleDownloadPhotoResponse(data:error:))                }
-            }
+                FlickrAPIClient.downloadPhoto(photo: $0, completion: self.handleDownloadPhotoResponse(data:error:))                }
+        }
         
         if FlickrAPIClient.Variables.fetchedPhotosResponses.count < 25 {
-           let photos = self.performFetch(offset: FlickrAPIClient.Variables.fetchedPhotosResponses.count)
-           photos?.forEach { self.dataController.viewContext.delete($0) }
-           // if no photos for location, show label indicating as much
-           if FlickrAPIClient.Variables.fetchedPhotosResponses.count == 0 {
-              //self.noImagesLabel.isHidden = false
-           }
+            let photos = self.performFetch(offset: FlickrAPIClient.Variables.fetchedPhotosResponses.count)
+            photos?.forEach { self.dataController.viewContext.delete($0) }
+            // if no photos for location, show label indicating as much
+            if FlickrAPIClient.Variables.fetchedPhotosResponses.count == 0 {
+                //self.noImagesLabel.isHidden = false
+            }
         }
         
-        }
     }
     
     func handleFetchPhotosResponse(success: Bool, error: Error?) {
@@ -163,9 +178,11 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         }
     }
     
+    
     func handleDownloadPhotoResponse(data: Data?, error: Error?) {
         guard let data = data else {
             print("ERROR[handleDownloadPhotoResponse]: \(error?.localizedDescription)")
+            return
         }
         
         if let image = UIImage(data: data) {
@@ -184,3 +201,5 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
             }
         }
     }
+    
+}
