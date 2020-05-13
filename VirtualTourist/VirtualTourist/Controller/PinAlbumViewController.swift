@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
     
     //MARK: - UI CONNECTIONS
     @IBOutlet weak var mapView: MKMapView!
@@ -31,13 +31,14 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
+        noImagesLabel.isHidden = true
         
         setupFetchedResultsController()
         setupMapView()
-        setupCollectionViewLayout()
         
-        print("Total numberOfSections: \(fetchedResultsController.sections?.count)")
+        albumCollectionView.dataSource = self
+        albumCollectionView.delegate = self
+        setupCollectionViewLayout()
         
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
     }
@@ -66,20 +67,29 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     }
     
     //MARK: - COLLECTIONVIEW DELEGATES
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        //Delete the selected photo
+        let photo = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(photo)
+        try? dataController.viewContext.save()
+    }
     
     
     
     //MARK: - UI-DRIVEN ACTIONS
     @IBAction func newCollectionTapped(_ sender: Any) {
-        print("User has tapped newCollection Button")
         
         pin.removeFromPhotos(pin.photos!)
-        for _ in 0..<30 {
+        for _ in 0..<25 {
            let photo = Photo(context: dataController.viewContext)
            pin.addToPhotos(photo)
         }
         try? dataController.viewContext.save()
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
+    }
+    
+    func configureLoadingUI(isLoading: Bool) {
+        newCollectionButton.isEnabled = !isLoading
     }
     
     
@@ -143,12 +153,13 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     }
     
     func fetchPhotos(at location: CLLocationCoordinate2D) {
-        //TODO: Configure Loading UI
+        //Configure Loading UI - Hide the newCollectionButton
+        configureLoadingUI(isLoading: true)
         
         // get photos from a search querying the latitude and longitude
         FlickrAPIClient.fetchPhotos(fromLocation: (latitude: pin.latitude, longitude: pin.longitude)) { (success: Bool, error: Error?) in
             guard error == nil else {
-                print("ERROR: \(error!.localizedDescription)")
+                self.showAlert(title: "ERROR", message: error!.localizedDescription)
                 return
             }
             
@@ -161,27 +172,16 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
             photos?.forEach { self.dataController.viewContext.delete($0) }
             // if no photos for location, show label indicating as much
             if FlickrAPIClient.Variables.fetchedPhotosResponses.count == 0 {
-                //self.noImagesLabel.isHidden = false
+                self.noImagesLabel.isHidden = false
             }
         }
-        
-    }
-    
-    func handleFetchPhotosResponse(success: Bool, error: Error?) {
-        DispatchQueue.main.async {
-            if success {
-                //print(FlickrAPIClient.Variables.fetchedPhotosResponses)
-                print("Photos Fetched Successfully")
-            } else {
-                print("ERROR[1]: \(error!)")
-            }
-        }
+        albumCollectionView.reloadData()
     }
     
     
     func handleDownloadPhotoResponse(data: Data?, error: Error?) {
         guard let data = data else {
-            print("ERROR[handleDownloadPhotoResponse]: \(error?.localizedDescription)")
+            self.showAlert(title: "Error", message: error?.localizedDescription ?? "An error occured during photo download.")
             return
         }
         
@@ -196,7 +196,8 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
                 }
                 try? dataController.viewContext.save()
                 if photos.first(where: {$0.placeholder}) == nil {
-                    //TODO: Configure the UI
+                    //Configure the UI - Unhide the newCollectionButton
+                    configureLoadingUI(isLoading: false)
                 }
             }
         }

@@ -23,6 +23,7 @@
 		91D64215246B524B00B3E9AC /* PhotoAlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D64214246B524B00B3E9AC /* PhotoAlbumCollectionViewCell.swift */; };
 		91D64218246BBCAB00B3E9AC /* Photo+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D64217246BBCAB00B3E9AC /* Photo+Extensions.swift */; };
 		91D6421B246C534700B3E9AC /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 91D64219246C534700B3E9AC /* VirtualTourist.xcdatamodeld */; };
+		91D6421D246C6BA900B3E9AC /* ViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D6421C246C6BA900B3E9AC /* ViewController+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		91D64214246B524B00B3E9AC /* PhotoAlbumCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		91D64217246BBCAB00B3E9AC /* Photo+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo+Extensions.swift"; sourceTree = "<group>"; };
 		91D6421A246C534700B3E9AC /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
+		91D6421C246C6BA900B3E9AC /* ViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 			children = (
 				91D642002467DCE800B3E9AC /* LocationMapViewController.swift */,
 				91D64204246A275400B3E9AC /* PinAlbumViewController.swift */,
+				91D6421C246C6BA900B3E9AC /* ViewController+Extension.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				91D64211246B502E00B3E9AC /* SearchPhotosResponse.swift in Sources */,
 				91D641B924631F2100B3E9AC /* AppDelegate.swift in Sources */,
 				91D641BB24631F2100B3E9AC /* SceneDelegate.swift in Sources */,
+				91D6421D246C6BA900B3E9AC /* ViewController+Extension.swift in Sources */,
 				91D6420E246B0A5C00B3E9AC /* Constants.swift in Sources */,
 				91D64218246BBCAB00B3E9AC /* Photo+Extensions.swift in Sources */,
 				91D64215246B524B00B3E9AC /* PhotoAlbumCollectionViewCell.swift in Sources */,

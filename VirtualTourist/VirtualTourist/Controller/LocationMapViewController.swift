@@ -73,12 +73,10 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     @objc func longPressOnMap(_ gestureRecognizer : UIGestureRecognizer) {
         if gestureRecognizer.state != .began { return }
         
-        print("Long Press Recognized")
-        
         let touchPoint = gestureRecognizer.location(in: mapView)
         let touchMapCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
-        //TODO: Save Pin to CoreData
+        //Save Pin to CoreData
         savePin(latitude:
             touchMapCoordinate.latitude,
             longitude: touchMapCoordinate.longitude,
@@ -121,6 +119,8 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
         pin.creationDate = creationDate
         
         try? dataController.viewContext.save()
+        
+        fetchSavedPins()
     }
     
     

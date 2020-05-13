@@ -13,17 +13,12 @@ class FlickrAPIClient {
     
     struct Variables {
         static var fetchedPhotosResponses = [PhotoResponse]()
-        static var fetchedPhotos = [Data]()
-        static var photoData: Data!
     }
     
     struct Auth {
         static let apiKey = Constants.FlickrAPIKey
         static let apiSecret = Constants.FlickrAPISecret
     }
-    
-    //case .source(let photo):
-    //return "https://farm\(photo.farm).staticflickr.com/\(photo.server)/\(photo.id)_\(photo.secret)_q.jpg"
     
     //MARK : - Endpoint Handler
     enum Endpoints {
@@ -67,7 +62,6 @@ class FlickrAPIClient {
             do {
                 let responseObject = try JSONDecoder().decode(SearchPhotosResponse.self, from: data)
                 let photos = [PhotoResponse](responseObject.photos.photo)
-                //TODO: Remove if this is no longer needed
                 Variables.fetchedPhotosResponses = photos
                 completion(true, nil)
             } catch  {
