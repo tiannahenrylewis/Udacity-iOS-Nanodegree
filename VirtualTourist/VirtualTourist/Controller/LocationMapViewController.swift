@@ -16,14 +16,17 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     //MARK: - VARIABLES
-    var savedPins : [Pin] = []
-    
     //Injected DataController class
     var dataController: DataController!
+    
+    var savedPins : [Pin] = []
+    var selectedPinLocation: Pin!
 
     
     var annotations = [MKPointAnnotation]()
     let pinReuseID = "pin"
+    
+    let segueID = "showAlbumSegue"
     
     
     
@@ -43,6 +46,18 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
         if UserDefaultsClient.latitude != 0.0 {
             mapView.region = UserDefaultsClient.savedMapView
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+       super.viewWillDisappear(animated)
+       navigationController?.navigationBar.isHidden = false
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+      // inject pin and dataController to ViewController
+      let destinationVC = segue.destination as! PinAlbumViewController
+      destinationVC.pin = selectedPinLocation
+      destinationVC.dataController = dataController
     }
     
     //MARK: - GESTURE
@@ -112,7 +127,11 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     //MARK: - MAPKIT METHODS
     //Action to be performed when a pin is tapped
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        //
+        // find which pin was tapped (at annotation latitude and longitude)
+        selectedPinLocation = savedPins.filter({ $0.latitude == view.annotation?.coordinate.latitude && $0.longitude == view.annotation?.coordinate.longitude }).first
+        
+        //Segue to the album view
+        performSegue(withIdentifier: segueID, sender: self)
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
@@ -121,3 +140,7 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     }
 
 }
+
+//pins.filter({ $0.coordinate.latitude == view.annotation?.coordinate.latitude && $0.coordinate.longitude == view.annotation?.coordinate.longitude }).first
+
+//let annotations = result.map { createAnnotations(latitude: $0.latitude, longitude: $0.longitude)}

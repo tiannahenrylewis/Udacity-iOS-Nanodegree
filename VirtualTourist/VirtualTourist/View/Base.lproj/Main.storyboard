@@ -76,13 +76,27 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="sgJ-RL-Qxm">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoAlbumCell" id="sgJ-RL-Qxm" customClass="PhotoAlbumCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Q9d-la-Se0">
                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Nef-6I-um5">
+                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Nef-6I-um5" firstAttribute="top" secondItem="Q9d-la-Se0" secondAttribute="top" id="2hV-Da-cmF"/>
+                                                <constraint firstAttribute="trailing" secondItem="Nef-6I-um5" secondAttribute="trailing" id="8zc-4H-c1B"/>
+                                                <constraint firstItem="Nef-6I-um5" firstAttribute="leading" secondItem="Q9d-la-Se0" secondAttribute="leading" id="Rgh-xa-33o"/>
+                                                <constraint firstAttribute="bottom" secondItem="Nef-6I-um5" secondAttribute="bottom" id="ucT-ri-7lc"/>
+                                            </constraints>
                                         </collectionViewCellContentView>
+                                        <connections>
+                                            <outlet property="imageView" destination="Nef-6I-um5" id="aKe-oe-F8U"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
