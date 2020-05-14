@@ -30,8 +30,8 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
-        noImagesLabel.isHidden = true
+        // Do any additional setup after loading the view
+        noImagesLabel.isHidden = false
         
         setupFetchedResultsController()
         setupMapView()
@@ -41,6 +41,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         setupCollectionViewLayout()
         
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -62,29 +63,57 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseID, for: indexPath) as! PhotoAlbumCollectionViewCell
-        cell.imageView.image = UIImage(data: photo.imageData!)
+        if photo.imageData != nil {
+            cell.imageView.image = UIImage(data: photo.imageData!)
+        } else {
+            cell.imageView.image = nil
+        }
         return cell
     }
     
     //MARK: - COLLECTIONVIEW DELEGATES
+    var blocks = [BlockOperation]()
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //Delete the selected photo
-        let photo = fetchedResultsController.object(at: indexPath)
-        dataController.viewContext.delete(photo)
-        try? dataController.viewContext.save()
+        deletePhoto(at: indexPath)
+        collectionView.reloadData()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        switch type{
+        case .insert:
+            blocks.append(BlockOperation { [unowned self] in
+                self.albumCollectionView.insertItems(at: [newIndexPath!])
+            })
+        case .delete:
+            blocks.append(BlockOperation {[unowned self] in
+                self.albumCollectionView.deleteItems(at: [indexPath!])
+            })
+        case .update:
+            blocks.append(BlockOperation {[unowned self] in
+                self.albumCollectionView.reloadItems(at: [indexPath!])
+            })
+        case .move:
+            fallthrough
+        default:
+            fatalError("Invalid Chane type in controller.")
+        }
     }
     
     
     
     //MARK: - UI-DRIVEN ACTIONS
     @IBAction func newCollectionTapped(_ sender: Any) {
-        
         pin.removeFromPhotos(pin.photos!)
+        
         for _ in 0..<25 {
-           let photo = Photo(context: dataController.viewContext)
-           pin.addToPhotos(photo)
+            let photo = Photo(context: dataController.viewContext)
+            pin.addToPhotos(photo)
         }
+        
         try? dataController.viewContext.save()
+        
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
     }
     
@@ -171,11 +200,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
             let photos = self.performFetch(offset: FlickrAPIClient.Variables.fetchedPhotosResponses.count)
             photos?.forEach { self.dataController.viewContext.delete($0) }
             // if no photos for location, show label indicating as much
-            if FlickrAPIClient.Variables.fetchedPhotosResponses.count == 0 {
-                self.noImagesLabel.isHidden = false
-            }
         }
-        albumCollectionView.reloadData()
     }
     
     
@@ -187,20 +212,36 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         
         if let image = UIImage(data: data) {
             if let photos = performFetch() {
-                if photos.count == 25 {
-                    photos.first(where: {$0.placeholder})?.image = image
-                } else {
+                if photos.count != 25 {
                     let newPhoto = Photo(context: dataController.viewContext)
                     newPhoto.image = image
                     pin.addToPhotos(newPhoto)
                 }
+                
+                
                 try? dataController.viewContext.save()
                 if photos.first(where: {$0.placeholder}) == nil {
                     //Configure the UI - Unhide the newCollectionButton
                     configureLoadingUI(isLoading: false)
+                    //Display the corrent state of the noImagesLabel
+                    if FlickrAPIClient.Variables.fetchedPhotosResponses.count == 0 {
+                        self.noImagesLabel.isHidden = false
+                    } else {
+                        self.noImagesLabel.isHidden = true
+                    }
+                    //Reload the collection view to display the images
+                    DispatchQueue.main.async {
+                        self.albumCollectionView.reloadData()
+                    }
                 }
             }
         }
+    }
+    
+    func deletePhoto(at indexPath: IndexPath) {
+        let photo = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(photo)
+        try? dataController.viewContext.save()
     }
     
 }
