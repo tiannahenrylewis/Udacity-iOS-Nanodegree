@@ -63,11 +63,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseID, for: indexPath) as! PhotoAlbumCollectionViewCell
-        if photo.imageData != nil {
-            cell.imageView.image = UIImage(data: photo.imageData!)
-        } else {
-            cell.imageView.image = nil
-        }
+        cell.imageView.image = UIImage(data: photo.imageData!)
         return cell
     }
     
@@ -105,6 +101,8 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     
     //MARK: - UI-DRIVEN ACTIONS
     @IBAction func newCollectionTapped(_ sender: Any) {
+        self.newCollectionButton.isEnabled = false
+        
         pin.removeFromPhotos(pin.photos!)
         
         for _ in 0..<25 {
@@ -115,6 +113,11 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         try? dataController.viewContext.save()
         
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
+        
+        DispatchQueue.main.async {
+            self.albumCollectionView.reloadData()
+        }
+        
     }
     
     func configureLoadingUI(isLoading: Bool) {
@@ -124,9 +127,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     
     //MARK: - METHODS
     func setupFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        let fetchRequest = createFetchRequest()
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
@@ -135,16 +136,19 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         do {
             try fetchedResultsController.performFetch()
         } catch {
-            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+            fatalError("Failed to load data from memrory with error: \(error.localizedDescription)")
         }
     }
     
     func createFetchRequest(_ offset: Int? = nil) -> NSFetchRequest<Photo> {
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
-        fetchRequest.predicate = predicate
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
+        
         fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.predicate = predicate
+        
+        
         if let offset = offset {
             fetchRequest.fetchOffset = offset
         }
@@ -199,7 +203,6 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         if FlickrAPIClient.Variables.fetchedPhotosResponses.count < 25 {
             let photos = self.performFetch(offset: FlickrAPIClient.Variables.fetchedPhotosResponses.count)
             photos?.forEach { self.dataController.viewContext.delete($0) }
-            // if no photos for location, show label indicating as much
         }
     }
     
@@ -229,10 +232,11 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
                     } else {
                         self.noImagesLabel.isHidden = true
                     }
-                    //Reload the collection view to display the images
-                    DispatchQueue.main.async {
-                        self.albumCollectionView.reloadData()
-                    }
+                    
+                }
+                //Reload the collection view to display the images
+                DispatchQueue.main.async {
+                    self.albumCollectionView.reloadData()
                 }
             }
         }

@@ -33,6 +33,8 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     //MARK: - LIFECYCLE METHODS
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        //Hide the topNavBar
+        navigationController?.navigationBar.isHidden = true
         
         setupGestureRecognizer()
         fetchSavedPins()

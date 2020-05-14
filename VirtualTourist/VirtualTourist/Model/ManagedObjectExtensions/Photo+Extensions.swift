@@ -20,6 +20,8 @@ extension Photo {
    
    public override func awakeFromInsert() {
       self.id = Photo.fetchUniqueID()
+    // put placeholder image into photo
+    self.imageData = UIImage(systemName: "photo")?.jpegData(compressionQuality: 1.0)
    }
    
    // construct a UIImage from the stored imageData on get, store UIImage as imageData and track that it's no longer a placeholder image on set
