@@ -97,6 +97,16 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         }
     }
     
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        blocks.removeAll()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        albumCollectionView.performBatchUpdates({
+            blocks.forEach { $0.start() }
+        }, completion: nil)
+    }
+    
     
     
     //MARK: - UI-DRIVEN ACTIONS
@@ -223,6 +233,7 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
                 
                 
                 try? dataController.viewContext.save()
+                
                 if photos.first(where: {$0.placeholder}) == nil {
                     //Configure the UI - Unhide the newCollectionButton
                     configureLoadingUI(isLoading: false)
