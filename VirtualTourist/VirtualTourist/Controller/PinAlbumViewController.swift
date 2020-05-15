@@ -25,6 +25,8 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     
     let cellReuseID = "photoAlbumCell"
     
+    var loadNewCollection: Bool = false
+    
     
     //MARK: - LIFECYCLE METHODS
     override func viewDidLoad() {
@@ -63,7 +65,15 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseID, for: indexPath) as! PhotoAlbumCollectionViewCell
-        cell.imageView.image = UIImage(data: photo.imageData!)
+        if loadNewCollection == true {
+            let fetchedPhotoObject = fetchedResultsController.object(at: indexPath) as Photo
+            let fetchedPhoto = fetchedPhotoObject.image
+            print(fetchedPhoto)
+            cell.imageView.image = fetchedPhoto
+            loadNewCollection = false
+        } else {
+            cell.imageView.image = UIImage(data: photo.imageData!)
+        }
         return cell
     }
     
@@ -112,21 +122,15 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
     //MARK: - UI-DRIVEN ACTIONS
     @IBAction func newCollectionTapped(_ sender: Any) {
         self.newCollectionButton.isEnabled = false
+        self.loadNewCollection = true
         
         pin.removeFromPhotos(pin.photos!)
-        
-        for _ in 0..<25 {
-            let photo = Photo(context: dataController.viewContext)
-            pin.addToPhotos(photo)
-        }
         
         try? dataController.viewContext.save()
         
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
         
-        DispatchQueue.main.async {
-            self.albumCollectionView.reloadData()
-        }
+        albumCollectionView.reloadData()
         
     }
     
