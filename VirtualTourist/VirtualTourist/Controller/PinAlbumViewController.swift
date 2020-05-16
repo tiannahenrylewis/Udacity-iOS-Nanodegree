@@ -42,7 +42,9 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         albumCollectionView.delegate = self
         setupCollectionViewLayout()
         
-        fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
+        if fetchedResultsController.fetchedObjects!.count == 0 {
+            fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
+        }
         
     }
     
@@ -124,14 +126,16 @@ class PinAlbumViewController: UIViewController, NSFetchedResultsControllerDelega
         self.newCollectionButton.isEnabled = false
         self.loadNewCollection = true
         
-        pin.removeFromPhotos(pin.photos!)
+        //pin.removeFromPhotos(pin.photos!)
+        for photo in fetchedResultsController.fetchedObjects! {
+            dataController.viewContext.delete(photo)
+        }
         
         try? dataController.viewContext.save()
         
         fetchPhotos(at: CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude))
         
         albumCollectionView.reloadData()
-        
     }
     
     func configureLoadingUI(isLoading: Bool) {

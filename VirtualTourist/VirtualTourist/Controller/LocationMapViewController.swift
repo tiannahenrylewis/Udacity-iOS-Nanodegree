@@ -66,7 +66,7 @@ class LocationMapViewController: UIViewController, MKMapViewDelegate {
     //Setup the gesture recognizer so the app will know when the user long presses on the map
     func setupGestureRecognizer() {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnMap(_:)))
-        longPress.minimumPressDuration = 2.0
+        longPress.minimumPressDuration = 0.5
         mapView.addGestureRecognizer(longPress)
     }
     
