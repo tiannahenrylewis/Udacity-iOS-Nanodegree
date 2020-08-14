@@ -3,8 +3,16 @@
  
  ## Pitch Perfect  
  
- ## MemeMe
+ ### Project Details  
  
- ## MemeMe 2.0
+ ## MemeMe  
  
- ## Virtual Tourist
+ ### Project Details  
+ 
+ ## MemeMe 2.0  
+ 
+ ### Project Details   
+ 
+ ## Virtual Tourist  
+ 
+  ### Project Details  
